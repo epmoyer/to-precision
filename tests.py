@@ -1,6 +1,34 @@
 __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
 
 import unittest
+from to_precision import to_precision, std_notation, sci_notation, eng_notation, _sci_notation, _place_dot, _number_profile
+
+class TestToPrecision(unittest.TestCase):
+  def test_multi(self):
+    self.assertEqual(
+        to_precision(500, 2, notation='auto', filler='e'),
+        '500'
+      )
+
+    self.assertEqual(
+        to_precision(1001, 2, notation='auto', filler='e'),
+        '1.0e3'
+      )
+
+    self.assertEqual(
+        to_precision(500, 2, notation='std', filler='e'),
+        '500'
+      )
+
+    self.assertEqual(
+        to_precision(500, 2, notation='sci', filler='e'),
+        '5.0e2'
+      )
+
+    self.assertEqual(
+        to_precision(1100, 2, notation='eng', filler='e'),
+        '1.1e3'
+      )
 
 
 class TestEngNotation(unittest.TestCase):

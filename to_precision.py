@@ -3,7 +3,7 @@ __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/will
 import math
 
 
-def to_precision(value, precision, notation='auto'):
+def to_precision(value, precision, notation='auto', filler='e'):
   '''
   converts a value to the specified notation and precision
   value - any type that can be converted to a float
@@ -37,10 +37,10 @@ def to_precision(value, precision, notation='auto'):
   else:
     raise ValueError('Unknown notation: ' + str(notation))
 
-  return converter(value, precision)
+  return converter(value, precision, filler)
 
 
-def std_notation(value, precision):
+def std_notation(value, precision, extra=None):
   '''
   standard notation (US version)
   ref: http://www.mathsisfun.com/definitions/standard-notation.html
@@ -93,6 +93,11 @@ def eng_notation(value, precision, filler):
 
   returns a string of value with the proper precision and 10s exponent that is divisable by 3
   filler is placed between the decimal value and 10s exponent
+
+  ex:
+    sci_notation(123, 1, 'E') => 100E0
+    sci_notation(1230, 3, 'E') => 1.23E3
+    sci_notation(.126, 2, 'E') => 120E-3
 
   created by William Rusnack
     github.com/BebeSparkelSparkel
