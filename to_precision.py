@@ -1,62 +1,79 @@
-def to_precision(x,p):
-    """
-    returns a string representation of x formatted with a precision of p
+import math
+
+# def sci_not(value, filler):
+
+
+def to_precision(value, precision, notation='auto'):
+    '''
+    returns a string representation of value formatted with a precision of precision
+
+    notation
+        auto - automatically chooses what type of notation to use
+        std - standard notation ex(1, 0.0005, 5000) ref: http://www.mathsisfun.com/definitions/standard-notation.html
+        E - E notation. ref: http://encyclopedia2.thefreedictionary.com/E+notation
+            like scientific notation but with E
+        e - e notation. ref: http://encyclopedia2.thefreedictionary.com/E+notation
+            like scientific notation but with e
 
     Based on the webkit javascript implementation taken from here:
     https://code.google.com/p/webkit-mirror/source/browse/JavaScriptCore/kjs/number_object.cpp
-    """
+    '''
+
+    value = float(value)
+
+    if notation == 'auto':
+        if value == 0:
+            precision -= 1
+            out = '0'
+            if precision:
+                out += '.' + '0' * precision
+
+        else:
+            out = ''
+
+            if value < 0:
+                out += '-'
+                value *= -1
+
+            e = int(math.log10(value))
+
+            tens = math.pow(10, e - precision + 1)
+            n = math.floor(value / tens)
+
+            if n < math.pow(10, precision - 1):
+                e = e -1
+                tens = math.pow(10, e - precision+1)
+                n = math.floor(value / tens)
+
+            if abs((n + 1.) * tens - value) <= abs(n * tens -value):
+                n = n + 1
+
+            if n >= math.pow(10,precision):
+                n = n / 10.
+                e = e + 1
 
 
-    import math
-    x = float(x)
+            m = '%.*g' % (precision, n)
 
-    if x == 0.:
-        return "0." + "0"*(p-1)
+            if e < -2 or e >= precision:
+                out += m[0]
+                if precision > 1:
+                    out += '.'
+                    out += m[1:precision]
+                out += 'e'
+                if e > 0:
+                    out += '+'
+                out += str(e)
+            elif e == (precision -1):
+                out += m
+            elif e >= 0:
+                out += m[:e+1]
+                if e+1 < len(m):
+                    out += '.'
+                    out += m[e+1:]
+            else:
+                out += '0.'
+                out += ['0']*-(e+1)
+                out += m
 
-    out = []
-
-    if x < 0:
-        out.append("-")
-        x = -x
-
-    e = int(math.log10(x))
-    tens = math.pow(10, e - p + 1)
-    n = math.floor(x/tens)
-
-    if n < math.pow(10, p - 1):
-        e = e -1
-        tens = math.pow(10, e - p+1)
-        n = math.floor(x / tens)
-
-    if abs((n + 1.) * tens - x) <= abs(n * tens -x):
-        n = n + 1
-
-    if n >= math.pow(10,p):
-        n = n / 10.
-        e = e + 1
-
-
-    m = "%.*g" % (p, n)
-
-    if e < -2 or e >= p:
-        out.append(m[0])
-        if p > 1:
-            out.append(".")
-            out.extend(m[1:p])
-        out.append('e')
-        if e > 0:
-            out.append("+")
-        out.append(str(e))
-    elif e == (p -1):
-        out.append(m)
-    elif e >= 0:
-        out.append(m[:e+1])
-        if e+1 < len(m):
-            out.append(".")
-            out.extend(m[e+1:])
-    else:
-        out.append("0.")
-        out.extend(["0"]*-(e+1))
-        out.append(m)
-
-    return "".join(out)
+        return out
