@@ -106,7 +106,7 @@ def eng_notation(value, precision, filler):
   '''
   is_neg, sig_digits, sci_dot, sci_power = _sci_notation(value, precision)
 
-  eng_power = 3 * math.floor(sci_power / 3)
+  eng_power = int(3 * math.floor(sci_power / 3))
   eng_dot = sci_dot + sci_power - eng_power
 
   return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot) + filler + str(eng_power)
@@ -190,6 +190,7 @@ def _number_profile(value, precision):
       is_neg = False
 
     power = -1 * math.floor(math.log10(value)) + precision - 1
-    sig_digits = str(round(abs(value) * 10**power))
+    sig_digits = str(int(round(abs(value) * 10.0**power)))
 
-  return sig_digits, -power, is_neg
+  return sig_digits, int(-power), is_neg
+
