@@ -8,6 +8,10 @@ williamrusnack@gmail.com
 and **Randle Taylor**
 github.com/randlet
 
+## Install
+
+    pip install git+https://github.com/BebeSparkelSparkel/to-precision.git
+
 ### to_precision
 to_precision.**to_precision**(value, precision, notation='auto')
 converts a value to the specified notation and precision
