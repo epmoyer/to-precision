@@ -13,7 +13,7 @@ github.com/randlet
     pip install git+https://github.com/BebeSparkelSparkel/to-precision.git
 
 ### to_precision
-to_precision.**to_precision**(value, precision, notation='auto')
+to_precision.**to_precision**(value, precision, notation='auto')  
 converts a value to the specified notation and precision
 value - any type that can be converted to a float
 predision - integer that is greater than zero
