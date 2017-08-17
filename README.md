@@ -18,7 +18,7 @@ converts a value to the specified notation and precision
 value - any type that can be converted to a float
 predision - integer that is greater than zero
 notation - string
-* 'auto' - selects standard notation when -1000 < value < 1000 else returns scientific notation
+* 'auto' - selects standard notation when 0.001 < abs(value) < 1000 else returns scientific notation
 * 'sci' or 'scientific' - returns scientific notation. https://www.mathsisfun.com/numbers/scientific-notation.html
 * 'eng' or 'engineering' - returns engineering notation. http://www.mathsisfun.com/definitions/engineering-notation.html
 * 'std' or 'standard' - returns standard notation. http://www.mathsisfun.com/definitions/standard-notation.html
