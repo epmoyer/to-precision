@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='to_precision',
-      version='0.0.0',
+      version='1.0.0',
       license='MIT',
       description='Formatting floating point numbers to standard, scientific, or engineering notation with a specified number of significant digits.',
       author='William Rusnack, Randle Taylor',

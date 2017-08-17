@@ -4,17 +4,40 @@ import unittest
 from to_precision import to_precision, std_notation, sci_notation, eng_notation, _sci_notation, _place_dot, _number_profile
 
 class TestToPrecision(unittest.TestCase):
-  def test_multi(self):
+  def test_auto(self):
+    # within limit
     self.assertEqual(
-        to_precision(500, 2, notation='auto', filler='e'),
-        '500'
+        to_precision(-552, 2, notation='auto', filler='e'),
+        '-550'
       )
 
+    self.assertEqual(
+        to_precision(552, 2, notation='auto', filler='e'),
+        '550'
+      )
+
+    # over limit
     self.assertEqual(
         to_precision(1001, 2, notation='auto', filler='e'),
         '1.0e3'
       )
 
+    self.assertEqual(
+        to_precision(-1001, 2, notation='auto', filler='e'),
+        '-1.0e3'
+      )
+
+    self.assertEqual(
+        to_precision(0.0009, 2, notation='auto', filler='e'),
+        '9.0e-4'
+      )
+
+    self.assertEqual(
+        to_precision(-0.0009, 2, notation='auto', filler='e'),
+        '-9.0e-4'
+      )
+
+  def test_multi(self):
     self.assertEqual(
         to_precision(500, 2, notation='std', filler='e'),
         '500'

@@ -20,7 +20,7 @@ def to_precision(value, precision, notation='auto', filler='e'):
   value = float(value)
 
   if notation == 'auto':
-    if -1000 < value < 1000:
+    if 0.001 < abs(value) < 1000:
       converter = std_notation
     else:
       converter = sci_notation
