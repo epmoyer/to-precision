@@ -26,8 +26,8 @@ def main():
 
     test_vectors = []
 
-    # Build test values: 0.0
-    test_values = [0.0]
+    # Build test values: 0.0, 10.0, 100.0
+    test_values = [0.0, 10.0, 100.0]
 
     # Build test values: 1.0 ... 123456789.0
     test_value_strings = []

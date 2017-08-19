@@ -132,6 +132,8 @@ The script `demonstration.py` exercises the various options...
     value         precision=1   precision=2    precision=3     precision=4      precision=5       Additional Options              
     ------------  ------------  -------------  --------------  ---------------  ----------------  ------------------------------  
     0             0             0.0            0.00            0.000            0.0000                                            
+    10            10            10             10.0            10.00            10.000                                            
+    100           100           100            100             100.0            100.00                                            
     1             1             1.0            1.00            1.000            1.0000                                            
     12            10            12             12.0            12.00            12.000                                            
     123           100           120            123             123.0            123.00                                            
@@ -158,6 +160,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   3e-3          3.5e-3         3.46e-3         3.457e-3         3.4568e-3                                         
     0.023456789   0.02          0.023          0.0235          0.02346          0.023457                                          
     0.123456789   0.1           0.12           0.123           0.1235           0.12346                                           
+    -10           -10           -10            -10.0           -10.00           -10.000                                           
+    -100          -100          -100           -100            -100.0           -100.00                                           
     -1            -1            -1.0           -1.00           -1.000           -1.0000                                           
     -12           -10           -12            -12.0           -12.00           -12.000                                           
     -123          -100          -120           -123            -123.0           -123.00                                           
@@ -184,8 +188,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -3e-3         -3.5e-3        -3.46e-3        -3.457e-3        -3.4568e-3                                        
     -0.023456789  -0.02         -0.023         -0.0235         -0.02346         -0.023457                                         
     -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346                                          
-                                                                                                                                 
+                                                                                                                                  
     0             0             0.0            0.00            0.000            0.0000            notation=std                    
+    10            10            10             10.0            10.00            10.000            notation=std                    
+    100           100           100            100             100.0            100.00            notation=std                    
     1             1             1.0            1.00            1.000            1.0000            notation=std                    
     12            10            12             12.0            12.00            12.000            notation=std                    
     123           100           120            123             123.0            123.00            notation=std                    
@@ -212,6 +218,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   0.003         0.0035         0.00346         0.003457         0.0034568         notation=std                    
     0.023456789   0.02          0.023          0.0235          0.02346          0.023457          notation=std                    
     0.123456789   0.1           0.12           0.123           0.1235           0.12346           notation=std                    
+    -10           -10           -10            -10.0           -10.00           -10.000           notation=std                    
+    -100          -100          -100           -100            -100.0           -100.00           notation=std                    
     -1            -1            -1.0           -1.00           -1.000           -1.0000           notation=std                    
     -12           -10           -12            -12.0           -12.00           -12.000           notation=std                    
     -123          -100          -120           -123            -123.0           -123.00           notation=std                    
@@ -238,8 +246,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -0.003        -0.0035        -0.00346        -0.003457        -0.0034568        notation=std                    
     -0.023456789  -0.02         -0.023         -0.0235         -0.02346         -0.023457         notation=std                    
     -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346          notation=std                    
-                                                                                                                                 
+                                                                                                                                  
     0             0e0           0.0e0          0.00e0          0.000e0          0.0000e0          notation=eng                    
+    10            10e0          10e0           10.0e0          10.00e0          10.000e0          notation=eng                    
+    100           100e0         100e0          100e0           100.0e0          100.00e0          notation=eng                    
     1             1e0           1.0e0          1.00e0          1.000e0          1.0000e0          notation=eng                    
     12            10e0          12e0           12.0e0          12.00e0          12.000e0          notation=eng                    
     123           100e0         120e0          123e0           123.0e0          123.00e0          notation=eng                    
@@ -266,6 +276,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   3e-3          3.5e-3         3.46e-3         3.457e-3         3.4568e-3         notation=eng                    
     0.023456789   20e-3         23e-3          23.5e-3         23.46e-3         23.457e-3         notation=eng                    
     0.123456789   100e-3        120e-3         123e-3          123.5e-3         123.46e-3         notation=eng                    
+    -10           -10e0         -10e0          -10.0e0         -10.00e0         -10.000e0         notation=eng                    
+    -100          -100e0        -100e0         -100e0          -100.0e0         -100.00e0         notation=eng                    
     -1            -1e0          -1.0e0         -1.00e0         -1.000e0         -1.0000e0         notation=eng                    
     -12           -10e0         -12e0          -12.0e0         -12.00e0         -12.000e0         notation=eng                    
     -123          -100e0        -120e0         -123e0          -123.0e0         -123.00e0         notation=eng                    
@@ -292,8 +304,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -3e-3         -3.5e-3        -3.46e-3        -3.457e-3        -3.4568e-3        notation=eng                    
     -0.023456789  -20e-3        -23e-3         -23.5e-3        -23.46e-3        -23.457e-3        notation=eng                    
     -0.123456789  -100e-3       -120e-3        -123e-3         -123.5e-3        -123.46e-3        notation=eng                    
-                                                                                                                                 
+                                                                                                                                  
     0             0e0           0.0e0          0.00e0          0.000e0          0.0000e0          notation=sci                    
+    10            1e1           1.0e1          1.00e1          1.000e1          1.0000e1          notation=sci                    
+    100           1e2           1.0e2          1.00e2          1.000e2          1.0000e2          notation=sci                    
     1             1e0           1.0e0          1.00e0          1.000e0          1.0000e0          notation=sci                    
     12            1e1           1.2e1          1.20e1          1.200e1          1.2000e1          notation=sci                    
     123           1e2           1.2e2          1.23e2          1.230e2          1.2300e2          notation=sci                    
@@ -320,6 +334,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   3e-3          3.5e-3         3.46e-3         3.457e-3         3.4568e-3         notation=sci                    
     0.023456789   2e-2          2.3e-2         2.35e-2         2.346e-2         2.3457e-2         notation=sci                    
     0.123456789   1e-1          1.2e-1         1.23e-1         1.235e-1         1.2346e-1         notation=sci                    
+    -10           -1e1          -1.0e1         -1.00e1         -1.000e1         -1.0000e1         notation=sci                    
+    -100          -1e2          -1.0e2         -1.00e2         -1.000e2         -1.0000e2         notation=sci                    
     -1            -1e0          -1.0e0         -1.00e0         -1.000e0         -1.0000e0         notation=sci                    
     -12           -1e1          -1.2e1         -1.20e1         -1.200e1         -1.2000e1         notation=sci                    
     -123          -1e2          -1.2e2         -1.23e2         -1.230e2         -1.2300e2         notation=sci                    
@@ -346,8 +362,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -3e-3         -3.5e-3        -3.46e-3        -3.457e-3        -3.4568e-3        notation=sci                    
     -0.023456789  -2e-2         -2.3e-2        -2.35e-2        -2.346e-2        -2.3457e-2        notation=sci                    
     -0.123456789  -1e-1         -1.2e-1        -1.23e-1        -1.235e-1        -1.2346e-1        notation=sci                    
-                                                                                                                                 
+                                                                                                                                  
     0             0             0              0               0                0                 notation=std, strip_zeros=True  
+    10            10            10             10              10               10                notation=std, strip_zeros=True  
+    100           100           100            100             100              100               notation=std, strip_zeros=True  
     1             1             1              1               1                1                 notation=std, strip_zeros=True  
     12            10            12             12              12               12                notation=std, strip_zeros=True  
     123           100           120            123             123              123               notation=std, strip_zeros=True  
@@ -374,6 +392,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   0.003         0.0035         0.00346         0.003457         0.0034568         notation=std, strip_zeros=True  
     0.023456789   0.02          0.023          0.0235          0.02346          0.023457          notation=std, strip_zeros=True  
     0.123456789   0.1           0.12           0.123           0.1235           0.12346           notation=std, strip_zeros=True  
+    -10           -10           -10            -10             -10              -10               notation=std, strip_zeros=True  
+    -100          -100          -100           -100            -100             -100              notation=std, strip_zeros=True  
     -1            -1            -1             -1              -1               -1                notation=std, strip_zeros=True  
     -12           -10           -12            -12             -12              -12               notation=std, strip_zeros=True  
     -123          -100          -120           -123            -123             -123              notation=std, strip_zeros=True  
@@ -400,8 +420,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -0.003        -0.0035        -0.00346        -0.003457        -0.0034568        notation=std, strip_zeros=True  
     -0.023456789  -0.02         -0.023         -0.0235         -0.02346         -0.023457         notation=std, strip_zeros=True  
     -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346          notation=std, strip_zeros=True  
-                                                                                                                                 
+                                                                                                                                  
     0             0e0           0e0            0e0             0e0              0e0               notation=sci, strip_zeros=True  
+    10            1e1           1e1            1e1             1e1              1e1               notation=sci, strip_zeros=True  
+    100           1e2           1e2            1e2             1e2              1e2               notation=sci, strip_zeros=True  
     1             1e0           1e0            1e0             1e0              1e0               notation=sci, strip_zeros=True  
     12            1e1           1.2e1          1.2e1           1.2e1            1.2e1             notation=sci, strip_zeros=True  
     123           1e2           1.2e2          1.23e2          1.23e2           1.23e2            notation=sci, strip_zeros=True  
@@ -428,6 +450,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   3e-3          3.5e-3         3.46e-3         3.457e-3         3.4568e-3         notation=sci, strip_zeros=True  
     0.023456789   2e-2          2.3e-2         2.35e-2         2.346e-2         2.3457e-2         notation=sci, strip_zeros=True  
     0.123456789   1e-1          1.2e-1         1.23e-1         1.235e-1         1.2346e-1         notation=sci, strip_zeros=True  
+    -10           -1e1          -1e1           -1e1            -1e1             -1e1              notation=sci, strip_zeros=True  
+    -100          -1e2          -1e2           -1e2            -1e2             -1e2              notation=sci, strip_zeros=True  
     -1            -1e0          -1e0           -1e0            -1e0             -1e0              notation=sci, strip_zeros=True  
     -12           -1e1          -1.2e1         -1.2e1          -1.2e1           -1.2e1            notation=sci, strip_zeros=True  
     -123          -1e2          -1.2e2         -1.23e2         -1.23e2          -1.23e2           notation=sci, strip_zeros=True  
@@ -454,8 +478,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -3e-3         -3.5e-3        -3.46e-3        -3.457e-3        -3.4568e-3        notation=sci, strip_zeros=True  
     -0.023456789  -2e-2         -2.3e-2        -2.35e-2        -2.346e-2        -2.3457e-2        notation=sci, strip_zeros=True  
     -0.123456789  -1e-1         -1.2e-1        -1.23e-1        -1.235e-1        -1.2346e-1        notation=sci, strip_zeros=True  
-                                                                                                                                 
+                                                                                                                                  
     0             0             0.0            0.00            0.000            0.0000            notation=std, preserve=True     
+    10            10            10             10.0            10.00            10.000            notation=std, preserve=True     
+    100           100           100            100             100.0            100.00            notation=std, preserve=True     
     1             1             1.0            1.00            1.000            1.0000            notation=std, preserve=True     
     12            12            12             12.0            12.00            12.000            notation=std, preserve=True     
     123           123           123            123             123.0            123.00            notation=std, preserve=True     
@@ -482,6 +508,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   0.003         0.0035         0.00346         0.003457         0.0034568         notation=std, preserve=True     
     0.023456789   0.02          0.023          0.0235          0.02346          0.023457          notation=std, preserve=True     
     0.123456789   0.1           0.12           0.123           0.1235           0.12346           notation=std, preserve=True     
+    -10           -10           -10            -10.0           -10.00           -10.000           notation=std, preserve=True     
+    -100          -100          -100           -100            -100.0           -100.00           notation=std, preserve=True     
     -1            -1            -1.0           -1.00           -1.000           -1.0000           notation=std, preserve=True     
     -12           -12           -12            -12.0           -12.00           -12.000           notation=std, preserve=True     
     -123          -123          -123           -123            -123.0           -123.00           notation=std, preserve=True     
@@ -508,8 +536,10 @@ The script `demonstration.py` exercises the various options...
     -0.003456789  -0.003        -0.0035        -0.00346        -0.003457        -0.0034568        notation=std, preserve=True     
     -0.023456789  -0.02         -0.023         -0.0235         -0.02346         -0.023457         notation=std, preserve=True     
     -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346          notation=std, preserve=True     
-                                                                                                                                 
+                                                                                                                                  
     0             0             0.0            0.00            0.000            0.0000            auto_limit=5                    
+    10            10            10             10.0            10.00            10.000            auto_limit=5                    
+    100           100           100            100             100.0            100.00            auto_limit=5                    
     1             1             1.0            1.00            1.000            1.0000            auto_limit=5                    
     12            10            12             12.0            12.00            12.000            auto_limit=5                    
     123           100           120            123             123.0            123.00            auto_limit=5                    
@@ -536,6 +566,8 @@ The script `demonstration.py` exercises the various options...
     0.003456789   0.003         0.0035         0.00346         0.003457         0.0034568         auto_limit=5                    
     0.023456789   0.02          0.023          0.0235          0.02346          0.023457          auto_limit=5                    
     0.123456789   0.1           0.12           0.123           0.1235           0.12346           auto_limit=5                    
+    -10           -10           -10            -10.0           -10.00           -10.000           auto_limit=5                    
+    -100          -100          -100           -100            -100.0           -100.00           auto_limit=5                    
     -1            -1            -1.0           -1.00           -1.000           -1.0000           auto_limit=5                    
     -12           -10           -12            -12.0           -12.00           -12.000           auto_limit=5                    
     -123          -100          -120           -123            -123.0           -123.00           auto_limit=5                    
@@ -561,4 +593,7 @@ The script `demonstration.py` exercises the various options...
     -0.000456789  -0.0005       -0.00046       -0.000457       -0.0004568       -0.00045679       auto_limit=5                    
     -0.003456789  -0.003        -0.0035        -0.00346        -0.003457        -0.0034568        auto_limit=5                    
     -0.023456789  -0.02         -0.023         -0.0235         -0.02346         -0.023457         auto_limit=5                    
-    -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346          auto_limit=5 
+    -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346          auto_limit=5                    
+                                                                                                                                  
+
+    Wrote 2280 test vectors to "candidate_test_vectors.json".
