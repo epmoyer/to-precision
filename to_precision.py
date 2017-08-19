@@ -3,24 +3,40 @@ __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/will
 import math
 
 
-def to_precision(value, precision, notation='auto', filler='e'):
+def to_precision(
+  value, 
+  precision,
+  notation='auto',
+  filler='e',
+  auto_limit=3,
+  strip_zeros=False,
+  preserve=False):
   '''
   converts a value to the specified notation and precision
   value - any type that can be converted to a float
-  predision - integer that is greater than zero
+  precision - integer that is greater than zero
   notation - string
-    'auto' - selects standard notation when -1000 < value < 1000 else returns scientific notation
+    'auto' - selects standard notation when abs(power) < auto_limit else 
+      returns scientific notation.
     'sci' or 'scientific' - returns scientific notation
       ref: https://www.mathsisfun.com/numbers/scientific-notation.html
     'eng' or 'engineering' - returns engineering notation
       ref: http://www.mathsisfun.com/definitions/engineering-notation.html
     'std' or 'standard' - returns standard notation
       ref: http://www.mathsisfun.com/definitions/standard-notation.html
+  filler - is placed between the decimal value and 10s exponent
+  auto_limit - integer. When abs(power) exceeds this limit, 'auto'
+    mode will return scientific notation.
+  strip_zeros - if true, trailing decimal zeros will be removed.
+  preserve - if true, 'std' will preserve all digits when returning
+    values that have no decimal component.
   '''
   value = float(value)
 
   if notation == 'auto':
-    if 0.001 < abs(value) < 1000:
+    # sig_digits, power, is_neg = _number_profile(value, precision)
+    is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
+    if abs(ten_power) < auto_limit: #or value == 0:
       converter = std_notation
     else:
       converter = sci_notation
@@ -37,10 +53,10 @@ def to_precision(value, precision, notation='auto', filler='e'):
   else:
     raise ValueError('Unknown notation: ' + str(notation))
 
-  return converter(value, precision, filler)
+  return converter(value, precision, filler, strip_zeros, preserve)
 
 
-def std_notation(value, precision, extra=None):
+def std_notation(value, precision, extra=None, strip_zeros=False, preserve=False):
   '''
   standard notation (US version)
   ref: http://www.mathsisfun.com/definitions/standard-notation.html
@@ -60,10 +76,15 @@ def std_notation(value, precision, extra=None):
   '''
   sig_digits, power, is_neg = _number_profile(value, precision)
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, power)
+  result = ('-' if is_neg else '') + _place_dot(sig_digits, power, strip_zeros)
+  if preserve and not '.' in result:
+    # If result has no decimal, preserve all digits
+    return '{:0.0f}'.format(value)
+
+  return result
 
 
-def sci_notation(value, precision, filler):
+def sci_notation(value, precision, filler, strip_zeros=False, extra=None):
   '''
   scientific notation
   ref: https://www.mathsisfun.com/numbers/scientific-notation.html
@@ -83,10 +104,10 @@ def sci_notation(value, precision, filler):
   '''
   is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power) + filler + str(ten_power)
+  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power, strip_zeros) + filler + str(ten_power)
 
 
-def eng_notation(value, precision, filler):
+def eng_notation(value, precision, filler, strip_zeros=False, extra=None):
   '''
   engineering notation
   ref: http://www.mathsisfun.com/definitions/engineering-notation.html
@@ -109,7 +130,7 @@ def eng_notation(value, precision, filler):
   eng_power = int(3 * math.floor(sci_power / 3))
   eng_dot = sci_dot + sci_power - eng_power
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot) + filler + str(eng_power)
+  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot, strip_zeros) + filler + str(eng_power)
 
 
 def _sci_notation(value, precision):
@@ -130,16 +151,21 @@ def _sci_notation(value, precision):
   return is_neg, sig_digits, dot_power, ten_power
 
 
-def _place_dot(digits, power):
+def _place_dot(digits, power, strip_zeros):
   '''
   places the dot in the correct spot in the digits
   if the dot is outside the range of the digits zeros will be added
+  if strip_zeros is set, trailing decimal zeros will be removed
 
   ex:
-    _place_dot(123, 2) => 12300
-    _place_dot(123, -2) => 1.23
-    _place_dot(123, 3) => 0.123
-    _place_dot(123, 5) => 0.00123
+    _place_dot('123',   2, False) => '12300'
+    _place_dot('123',  -2, False) => '1.23'
+    _place_dot('123',   3, False) => '0.123'
+    _place_dot('123',   5, False) => '0.00123'
+    _place_dot('1200', -2, False) => '12.00'
+    _place_dot('1200', -2, True ) => '12'
+    _place_dot('1200', -1, False) => '120.0'
+    _place_dot('1200', -1, True ) => '120'
 
     created by William Rusnack
       github.com/BebeSparkelSparkel
@@ -161,6 +187,12 @@ def _place_dot(digits, power):
 
   else:
     out = digits + ('.' if digits[-1] == '0' else '')
+
+  if strip_zeros and '.' in out:
+    out = out.rstrip('0')
+
+  if out.endswith('.'):
+    out = out[:-1]
 
   return out
 
