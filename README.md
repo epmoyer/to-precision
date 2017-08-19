@@ -1,7 +1,7 @@
 # to_precision
 Formatting floating point numbers to standard, scientific, or engineering notation with a specified number of significant digits.
 
-created by **William Rusnack**
+Created by **William Rusnack**
 github.com/BebeSparkelSparkel
 linkedin.com/in/williamrusnack/
 williamrusnack@gmail.com
@@ -91,6 +91,37 @@ ex:
     1.23E3
     >>> eng_notation(.126, 2, 'E')
     120E-3
+
+## Implicit vs. Explicit precision
+
+Consider the following data set:
+
+    A                 B              C              D              
+    ----------------  -------------  -------------  -------------  
+    1.00000000000     0.98765432100  0.08700000000  0.00000000234  
+    1.20000000000     1.40000000000  1.00000000000  0.00000000002  
+    1234.00000000000  1.23450000000  0.02345678000  0.00000000000 
+
+In a scientific or engineering context, one typically indicates precision *explicitly* by showing all significant digits.  This can be accomplished using `to_pecision()` with its default arguments.
+
+Using `to_precision(x, 3)` to render the example data set yields:
+
+    A       B      C       D         
+    ------  -----  ------  --------  
+    1.00    0.988  0.0870  2.34e-9   
+    1.20    1.40   1.00    2.00e-11  
+    1.23e3  1.23   0.0235  0.00
+
+In a business or informal context one may wish to *implicitly* specify precision, and render results in their simplest, least cluttered form given that precision.  This can be accomplished by invoking the `strip_zeros` and `preserve` arguments.  Additionally, `auto_limit` can be used to control the threshold at which scientific notation is adopted.
+
+Using `to_precision(x, 3, auto_limit=4, strip_zeros=True, preserve=True)` to render the example data set yields:
+
+    A     B      C       D        
+    ----  -----  ------  -------  
+    1     0.988  0.087   2.34e-9  
+    1.2   1.4    1       2e-11    
+    1234  1.23   0.0235  0 
+
 
 ## Demonstration
 
