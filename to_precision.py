@@ -30,34 +30,29 @@ def to_precision(
   preserve_integer - if true, 'std' will preserve all digits when returning
     values that have no decimal component.
   '''
-  is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
+  is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
   sign = ('-' if is_neg else '')
 
   if notation == 'auto':
     if abs(ten_power) < auto_limit:
-      notation = 'std'
+      converter = _std_notation
     else:
-      notation = 'sci'
+      converter = _sci_notation
 
-  if notation in ('sci', 'scientific'):
-    result = sign + _place_dot(sig_digits, dot_power, strip_zeros) + delimiter + str(ten_power)
+  elif notation in ('sci', 'scientific'):
+    converter = _sci_notation
 
   elif notation in ('eng', 'engineering'):
-    eng_power = int(3 * math.floor(ten_power / 3))
-    eng_dot = dot_power + ten_power - eng_power
-    result = sign + _place_dot(sig_digits, eng_dot, strip_zeros) + delimiter + str(eng_power)
+    converter = _eng_notation
 
   elif notation in ('std', 'standard'):
-    sig_digits, power, is_neg = _number_profile(value, precision)
-    result = sign + _place_dot(sig_digits, power, strip_zeros)
-    if preserve_integer and not '.' in result:
-      # Result was an integer, preserve all digits
-      result = '{:0.0f}'.format(value)
+    converter = _std_notation
 
   else:
     raise ValueError('Unknown notation: ' + str(notation))
 
-  return result
+  return converter(value, precision, delimiter, strip_zeros, preserve_integer)
+
 
 def auto_notation(value, precision, delimiter='e'):
   '''
@@ -74,6 +69,7 @@ def auto_notation(value, precision, delimiter='e'):
     std_notation(1234, 4) => '1.234e3'
   '''
   return to_precision(value, precision, notation='auto', delimiter=delimiter)
+
 
 def std_notation(value, precision):
   '''
@@ -138,7 +134,61 @@ def eng_notation(value, precision, delimiter='e'):
   return to_precision(value, precision, notation='eng', delimiter=delimiter)
 
 
-def _sci_notation(value, precision):
+def _std_notation(value, precision, _, strip_zeros, preserve_integer):
+  '''
+  standard notation (US version)
+  ref: http://www.mathsisfun.com/definitions/standard-notation.html
+
+  returns a string of value with the proper precision
+  
+  strip_zeros - if true, trailing decimal zeros will be removed.
+  preserve_integer - if true, 'std' will preserve all digits when returning
+    values that have no decimal component.
+  '''
+  sig_digits, power, is_neg = _number_profile(value, precision)
+  result = ('-' if is_neg else '') + _place_dot(sig_digits, power, strip_zeros)
+
+  if preserve_integer and not '.' in result:
+    # Result was an integer, preserve all digits
+    result = '{:0.0f}'.format(value)
+
+  return result
+
+
+def _sci_notation(value, precision, delimiter, strip_zeros, _):
+  '''
+  scientific notation
+  ref: https://www.mathsisfun.com/numbers/scientific-notation.html
+
+  returns a string of value with the proper precision and 10s exponent
+  delimiter is placed between the decimal value and 10s exponent
+
+  strip_zeros - if true, trailing decimal zeros will be removed.
+  '''
+  is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
+
+  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power, strip_zeros) + delimiter + str(ten_power)
+
+
+def _eng_notation(value, precision, delimiter, strip_zeros, _):
+  '''
+  engineering notation
+  ref: http://www.mathsisfun.com/definitions/engineering-notation.html
+
+  returns a string of value with the proper precision and 10s exponent that is divisible by 3
+  delimiter is placed between the decimal value and 10s exponent
+
+  strip_zeros - if true, trailing decimal zeros will be removed.
+  '''
+  is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
+
+  eng_power = int(3 * math.floor(ten_power / 3))
+  eng_dot = dot_power + ten_power - eng_power
+
+  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot, strip_zeros) + delimiter + str(eng_power)
+
+
+def _sci_decompose(value, precision):
   '''
   returns the properties for to construct a scientific notation number
   used in sci_notation and eng_notation

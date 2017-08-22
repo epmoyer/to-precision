@@ -1,7 +1,7 @@
 __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
 
 import unittest
-from to_precision import to_precision, auto_notation, std_notation, sci_notation, eng_notation, _sci_notation, _place_dot, _number_profile
+from to_precision import to_precision, auto_notation, std_notation, sci_notation, eng_notation, _place_dot, _number_profile
 
 class TestToPrecision(unittest.TestCase):
   def test_auto(self):
