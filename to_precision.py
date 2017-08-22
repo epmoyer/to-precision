@@ -2,7 +2,6 @@ __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/will
 
 import math
 
-
 def to_precision(
   value, 
   precision,
@@ -10,7 +9,7 @@ def to_precision(
   filler='e',
   auto_limit=3,
   strip_zeros=False,
-  preserve=False):
+  preserve_integer=False):
   '''
   converts a value to the specified notation and precision
   value - any type that can be converted to a float
@@ -28,35 +27,50 @@ def to_precision(
   auto_limit - integer. When abs(power) exceeds this limit, 'auto'
     mode will return scientific notation.
   strip_zeros - if true, trailing decimal zeros will be removed.
-  preserve - if true, 'std' will preserve all digits when returning
+  preserve_integer - if true, 'std' will preserve all digits when returning
     values that have no decimal component.
   '''
-  value = float(value)
+  is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
+  sign = ('-' if is_neg else '')
 
   if notation == 'auto':
-    # sig_digits, power, is_neg = _number_profile(value, precision)
-    is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
-    if abs(ten_power) < auto_limit: #or value == 0:
-      converter = std_notation
+    if abs(ten_power) < auto_limit:
+      notation = 'std'
     else:
-      converter = sci_notation
+      notation = 'sci'
 
-  elif notation in ('sci', 'scientific'):
-    converter = sci_notation
+  if notation in ('sci', 'scientific'):
+    result = sign + _place_dot(sig_digits, dot_power, strip_zeros) + filler + str(ten_power)
 
   elif notation in ('eng', 'engineering'):
-    converter = eng_notation
+    eng_power = int(3 * math.floor(ten_power / 3))
+    eng_dot = dot_power + ten_power - eng_power
+    result = sign + _place_dot(sig_digits, eng_dot, strip_zeros) + filler + str(eng_power)
 
   elif notation in ('std', 'standard'):
-    converter = std_notation
+    sig_digits, power, is_neg = _number_profile(value, precision)
+    result = sign + _place_dot(sig_digits, power, strip_zeros)
+    if preserve_integer and not '.' in result:
+      # Result was an integer, preserve all digits
+      result = '{:0.0f}'.format(value)
 
   else:
     raise ValueError('Unknown notation: ' + str(notation))
 
-  return converter(value, precision, filler, strip_zeros, preserve)
+  return result
 
+def auto_notation(value, precision):
+  '''
+  TODO: Needs comment block
+  Defaults to equivalent of auto_limit=3
+  '''
+  is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
+  if abs(ten_power) < 3:
+    return std_notation(value, precision)
+  else:
+    return sci_notation(value, precision)
 
-def std_notation(value, precision, extra=None, strip_zeros=False, preserve=False):
+def std_notation(value, precision):
   '''
   standard notation (US version)
   ref: http://www.mathsisfun.com/definitions/standard-notation.html
@@ -76,15 +90,10 @@ def std_notation(value, precision, extra=None, strip_zeros=False, preserve=False
   '''
   sig_digits, power, is_neg = _number_profile(value, precision)
 
-  result = ('-' if is_neg else '') + _place_dot(sig_digits, power, strip_zeros)
-  if preserve and not '.' in result:
-    # If result has no decimal, preserve all digits
-    return '{:0.0f}'.format(value)
-
-  return result
+  return ('-' if is_neg else '') + _place_dot(sig_digits, power)
 
 
-def sci_notation(value, precision, filler, strip_zeros=False, extra=None):
+def sci_notation(value, precision):
   '''
   scientific notation
   ref: https://www.mathsisfun.com/numbers/scientific-notation.html
@@ -104,10 +113,10 @@ def sci_notation(value, precision, filler, strip_zeros=False, extra=None):
   '''
   is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power, strip_zeros) + filler + str(ten_power)
+  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power) + 'e' + str(ten_power)
 
 
-def eng_notation(value, precision, filler, strip_zeros=False, extra=None):
+def eng_notation(value, precision):
   '''
   engineering notation
   ref: http://www.mathsisfun.com/definitions/engineering-notation.html
@@ -130,7 +139,7 @@ def eng_notation(value, precision, filler, strip_zeros=False, extra=None):
   eng_power = int(3 * math.floor(sci_power / 3))
   eng_dot = sci_dot + sci_power - eng_power
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot, strip_zeros) + filler + str(eng_power)
+  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot) + 'e' + str(eng_power)
 
 
 def _sci_notation(value, precision):
@@ -143,6 +152,7 @@ def _sci_notation(value, precision):
     linkedin.com/in/williamrusnack/
     williamrusnack@gmail.com
   '''
+  value = float(value)
   sig_digits, power, is_neg = _number_profile(value, precision)
 
   dot_power = -(precision - 1)
@@ -151,7 +161,7 @@ def _sci_notation(value, precision):
   return is_neg, sig_digits, dot_power, ten_power
 
 
-def _place_dot(digits, power, strip_zeros):
+def _place_dot(digits, power, strip_zeros=False):
   '''
   places the dot in the correct spot in the digits
   if the dot is outside the range of the digits zeros will be added
@@ -162,6 +172,7 @@ def _place_dot(digits, power, strip_zeros):
     _place_dot('123',  -2, False) => '1.23'
     _place_dot('123',   3, False) => '0.123'
     _place_dot('123',   5, False) => '0.00123'
+    _place_dot('120',   0, False) => '120.'
     _place_dot('1200', -2, False) => '12.00'
     _place_dot('1200', -2, True ) => '12'
     _place_dot('1200', -1, False) => '120.0'
@@ -186,13 +197,10 @@ def _place_dot(digits, power, strip_zeros):
       out = '0.' + '0' * (power - precision) + digits
 
   else:
-    out = digits + ('.' if digits[-1] == '0' else '')
+    out = digits + ('.' if digits[-1] == '0' and len(digits) > 1 else '')
 
   if strip_zeros and '.' in out:
-    out = out.rstrip('0')
-
-  if out.endswith('.'):
-    out = out[:-1]
+    out = out.rstrip('0').rstrip('.')
 
   return out
 
@@ -209,6 +217,7 @@ def _number_profile(value, precision):
       linkedin.com/in/williamrusnack/
       williamrusnack@gmail.com
   '''
+  value = float(value)
   if value == 0:
     sig_digits = '0' * precision
     power = -(1 - precision)
