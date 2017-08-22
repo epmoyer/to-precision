@@ -6,7 +6,7 @@ def to_precision(
   value, 
   precision,
   notation='auto',
-  filler='e',
+  delimiter='e',
   auto_limit=3,
   strip_zeros=False,
   preserve_integer=False):
@@ -23,7 +23,7 @@ def to_precision(
       ref: http://www.mathsisfun.com/definitions/engineering-notation.html
     'std' or 'standard' - returns standard notation
       ref: http://www.mathsisfun.com/definitions/standard-notation.html
-  filler - is placed between the decimal value and 10s exponent
+  delimiter - is placed between the decimal value and 10s exponent
   auto_limit - integer. When abs(power) exceeds this limit, 'auto'
     mode will return scientific notation.
   strip_zeros - if true, trailing decimal zeros will be removed.
@@ -40,12 +40,12 @@ def to_precision(
       notation = 'sci'
 
   if notation in ('sci', 'scientific'):
-    result = sign + _place_dot(sig_digits, dot_power, strip_zeros) + filler + str(ten_power)
+    result = sign + _place_dot(sig_digits, dot_power, strip_zeros) + delimiter + str(ten_power)
 
   elif notation in ('eng', 'engineering'):
     eng_power = int(3 * math.floor(ten_power / 3))
     eng_dot = dot_power + ten_power - eng_power
-    result = sign + _place_dot(sig_digits, eng_dot, strip_zeros) + filler + str(eng_power)
+    result = sign + _place_dot(sig_digits, eng_dot, strip_zeros) + delimiter + str(eng_power)
 
   elif notation in ('std', 'standard'):
     sig_digits, power, is_neg = _number_profile(value, precision)
@@ -59,16 +59,21 @@ def to_precision(
 
   return result
 
-def auto_notation(value, precision):
+def auto_notation(value, precision, delimiter='e'):
   '''
-  TODO: Needs comment block
-  Defaults to equivalent of auto_limit=3
+  Automatically selects between standard notation (US version) and scientific notation.
+  Values in the range 0.001 < abs(value) < 1000 return standard notation.
+
+  http://www.mathsisfun.com/definitions/standard-notation.html
+  https://www.mathsisfun.com/numbers/scientific-notation.html
+
+  returns a string of value with the proper precision
+
+  ex:
+    auto_notation(123, 4) => '123.4'
+    std_notation(1234, 4) => '1.234e3'
   '''
-  is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
-  if abs(ten_power) < 3:
-    return std_notation(value, precision)
-  else:
-    return sci_notation(value, precision)
+  return to_precision(value, precision, notation='auto', delimiter=delimiter)
 
 def std_notation(value, precision):
   '''
@@ -78,68 +83,59 @@ def std_notation(value, precision):
   returns a string of value with the proper precision
 
   ex:
-    std_notation(5, 2) => 5.0
-    std_notation(5.36, 2) => 5.4
-    std_notation(5360, 2) => 5400
-    std_notation(0.05363, 3) => 0.0536
+    std_notation(5, 2) => '5.0'
+    std_notation(5.36, 2) => '5.4'
+    std_notation(5360, 2) => '5400'
+    std_notation(0.05363, 3) => '0.0536'
 
     created by William Rusnack
       github.com/BebeSparkelSparkel
       linkedin.com/in/williamrusnack/
       williamrusnack@gmail.com
   '''
-  sig_digits, power, is_neg = _number_profile(value, precision)
-
-  return ('-' if is_neg else '') + _place_dot(sig_digits, power)
+  return to_precision(value, precision, notation='std')
 
 
-def sci_notation(value, precision):
+def sci_notation(value, precision, delimiter='e'):
   '''
   scientific notation
   ref: https://www.mathsisfun.com/numbers/scientific-notation.html
 
   returns a string of value with the proper precision and 10s exponent
-  filler is placed between the decimal value and 10s exponent
+  delimiter is placed between the decimal value and 10s exponent
 
   ex:
-    sci_notation(123, 1, 'E') => 1E2
-    sci_notation(123, 3, 'E') => 1.23E2
-    sci_notation(.126, 2, 'E') => 1.3E-1
+    sci_notation(123, 1, 'E') => '1E2'
+    sci_notation(123, 3, 'E') => '1.23E2'
+    sci_notation(.126, 2, 'E') => '1.3E-1'
 
     created by William Rusnack
       github.com/BebeSparkelSparkel
       linkedin.com/in/williamrusnack/
       williamrusnack@gmail.com
   '''
-  is_neg, sig_digits, dot_power, ten_power = _sci_notation(value, precision)
-
-  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power) + 'e' + str(ten_power)
+  return to_precision(value, precision, notation='sci', delimiter=delimiter)
 
 
-def eng_notation(value, precision):
+def eng_notation(value, precision, delimiter='e'):
   '''
   engineering notation
   ref: http://www.mathsisfun.com/definitions/engineering-notation.html
 
-  returns a string of value with the proper precision and 10s exponent that is divisable by 3
-  filler is placed between the decimal value and 10s exponent
+  returns a string of value with the proper precision and 10s exponent that is divisible by 3
+  delimiter is placed between the decimal value and 10s exponent
 
   ex:
-    sci_notation(123, 1, 'E') => 100E0
-    sci_notation(1230, 3, 'E') => 1.23E3
-    sci_notation(.126, 2, 'E') => 120E-3
+    sci_notation(123, 1, 'E') => '100E0'
+    sci_notation(1230, 3, 'E') => '1.23E3'
+    sci_notation(.126, 2, 'E') => '120E-3'
 
   created by William Rusnack
     github.com/BebeSparkelSparkel
     linkedin.com/in/williamrusnack/
     williamrusnack@gmail.com
   '''
-  is_neg, sig_digits, sci_dot, sci_power = _sci_notation(value, precision)
-
-  eng_power = int(3 * math.floor(sci_power / 3))
-  eng_dot = sci_dot + sci_power - eng_power
-
-  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot) + 'e' + str(eng_power)
+  return to_precision(value, precision, notation='eng', delimiter=delimiter)
 
 
 def _sci_notation(value, precision):

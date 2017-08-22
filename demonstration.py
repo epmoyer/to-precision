@@ -10,12 +10,11 @@ def main():
     """
 
     # Build test values
-    test_values = [0.0, 1.0, 10.0, 100.0]
+    test_values = [0.0, 1.0, 10.0, 100.0, -1.0]
     seed = [int(123456789. / 10**x) for x in range(7, -1, -1)]
     test_values += [float(x) for x in seed]
     test_values += [float(x) / 10**int(math.log10(x))  for x in seed]
     test_values += [float(x) / 10**9  for x in seed]
-    test_values += [-n for n in test_values if n != 0] # Negatives
 
     option_cases = [
         ('Default (Auto Notation)', {}),

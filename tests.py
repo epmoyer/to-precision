@@ -1,7 +1,7 @@
 __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
 
 import unittest
-from to_precision import to_precision, std_notation, sci_notation, eng_notation, _sci_notation, _place_dot, _number_profile
+from to_precision import to_precision, auto_notation, std_notation, sci_notation, eng_notation, _sci_notation, _place_dot, _number_profile
 
 class TestToPrecision(unittest.TestCase):
   def test_auto(self):
@@ -13,70 +13,70 @@ class TestToPrecision(unittest.TestCase):
 
     # within limit
     self.assertEqual(
-        to_precision(-552, 2, notation='auto', filler='e'),
+        to_precision(-552, 2, notation='auto', delimiter='e'),
         '-550'
       )
 
     self.assertEqual(
-        to_precision(552, 2, notation='auto', filler='e'),
+        to_precision(552, 2, notation='auto', delimiter='e'),
         '550'
       )
 
     # over limit
     self.assertEqual(
-        to_precision(1001, 2, notation='auto', filler='e'),
+        to_precision(1001, 2, notation='auto', delimiter='e'),
         '1.0e3'
       )
 
     self.assertEqual(
-        to_precision(-1001, 2, notation='auto', filler='e'),
+        to_precision(-1001, 2, notation='auto', delimiter='e'),
         '-1.0e3'
       )
 
     self.assertEqual(
-        to_precision(0.0009, 2, notation='auto', filler='e'),
+        to_precision(0.0009, 2, notation='auto', delimiter='e'),
         '9.0e-4'
       )
 
     self.assertEqual(
-        to_precision(-0.0009, 2, notation='auto', filler='e'),
+        to_precision(-0.0009, 2, notation='auto', delimiter='e'),
         '-9.0e-4'
       )
 
     # Auto limit
     self.assertEqual(
-        to_precision(1234, 4, notation='auto', filler='e'),
+        to_precision(1234, 4, notation='auto', delimiter='e'),
         '1.234e3'
       )
     self.assertEqual(
-        to_precision(1234, 4, notation='auto', filler='e', auto_limit=4),
+        to_precision(1234, 4, notation='auto', delimiter='e', auto_limit=4),
         '1234'
       )
 
     self.assertEqual(
-        to_precision(.001, 3, notation='auto', filler='e'),
+        to_precision(.001, 3, notation='auto', delimiter='e'),
         '1.00e-3'
       )
     self.assertEqual(
-        to_precision(.001, 3, notation='auto', filler='e', auto_limit=4),
+        to_precision(.001, 3, notation='auto', delimiter='e', auto_limit=4),
         '0.00100'
       )
 
     self.assertEqual(
-        to_precision(12345, 5, notation='auto', filler='e', auto_limit=4),
+        to_precision(12345, 5, notation='auto', delimiter='e', auto_limit=4),
         '1.2345e4'
       )
     self.assertEqual(
-        to_precision(12345, 5, notation='auto', filler='e', auto_limit=5),
+        to_precision(12345, 5, notation='auto', delimiter='e', auto_limit=5),
         '12345'
       )
 
     self.assertEqual(
-        to_precision(.000123, 3, notation='auto', filler='e', auto_limit=4),
+        to_precision(.000123, 3, notation='auto', delimiter='e', auto_limit=4),
         '1.23e-4'
       )
     self.assertEqual(
-        to_precision(.000123, 3, notation='auto', filler='e', auto_limit=5),
+        to_precision(.000123, 3, notation='auto', delimiter='e', auto_limit=5),
         '0.000123'
       )
 
@@ -95,24 +95,45 @@ class TestToPrecision(unittest.TestCase):
     self.assertEqual(
       to_precision(12000000, 5, notation='auto', strip_zeros=True),
       '1.2e7')
-
+    self.assertEqual(
+      to_precision(12000000, 5, notation='sci', strip_zeros=False),
+      '1.2000e7')
+    self.assertEqual(
+      to_precision(12000000, 5, notation='sci', strip_zeros=True),
+      '1.2e7')
+    self.assertEqual(
+      to_precision(12000000, 5, notation='eng', strip_zeros=False),
+      '12.000e6')
+    self.assertEqual(
+      to_precision(12000000, 5, notation='eng', strip_zeros=True),
+      '12e6')
+    self.assertEqual(
+      to_precision(12, 5, notation='std', strip_zeros=False),
+      '12.000')
+    self.assertEqual(
+      to_precision(12, 5, notation='std', strip_zeros=True),
+      '12')
 
   def test_multi(self):
     self.assertEqual(
-        to_precision(500, 2, notation='std', filler='e'),
+        to_precision(500, 2, notation='std', delimiter='e'),
         '500'
       )
 
     self.assertEqual(
-        to_precision(500, 2, notation='sci', filler='e'),
+        to_precision(500, 2, notation='sci', delimiter='e'),
         '5.0e2'
       )
 
     self.assertEqual(
-        to_precision(1100, 2, notation='eng', filler='e'),
+        to_precision(1100, 2, notation='eng', delimiter='e'),
         '1.1e3'
       )
 
+class TestAutoNotation(unittest.TestCase):
+  def test_multi(self):
+    self.assertEqual(auto_notation(123, 4), '123.0')
+    self.assertEqual(auto_notation(1234, 4), '1.234e3')
 
 class TestEngNotation(unittest.TestCase):
   def test_multi(self):
@@ -135,10 +156,6 @@ class TestEngNotation(unittest.TestCase):
     # sig zero
     self.assertEqual(eng_notation(10, 2), '10.e0')
 
-    # Zero stripping
-    # self.assertEqual(eng_notation(12000000, 5, 'e', strip_zeros=False), '12.000e6')
-    # self.assertEqual(eng_notation(12000000, 5, 'e', strip_zeros=True ), '12e6')
-
 class TestStdNotation(unittest.TestCase):
   def test_multi(self):
     self.assertEqual(std_notation(123, 1), '100')
@@ -158,14 +175,6 @@ class TestStdNotation(unittest.TestCase):
     # sig zero
     self.assertEqual(std_notation(10, 2), '10.')
 
-    # # Zero stripping
-    # self.assertEqual(std_notation(12, 5, None, strip_zeros=False), '12.000')
-    # self.assertEqual(std_notation(12, 5, None, strip_zeros=True ), '12')
-
-    # # Digit preservation
-    # self.assertEqual(std_notation(12345, 2, None, preserve_integer=False), '12000')
-    # self.assertEqual(std_notation(12345, 2, None, preserve_integer=True ), '12345')
-
 class TestSciNotation(unittest.TestCase):
   def test_multi(self):
     self.assertEqual(sci_notation(1, 1), '1e0')
@@ -183,10 +192,6 @@ class TestSciNotation(unittest.TestCase):
 
     self.assertEqual(sci_notation(123, 3), '1.23e2')
     self.assertEqual(sci_notation(-123, 4), '-1.230e2')  # round down
-
-    # # Zero stripping
-    # self.assertEqual(sci_notation(1.23, 5, 'e', strip_zeros=False), '1.2300e0')
-    # self.assertEqual(sci_notation(1.23, 5, 'e', strip_zeros=True ), '1.23e0')
 
 class TestPlaceDot(unittest.TestCase):
   def test_all(self):
