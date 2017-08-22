@@ -1,44 +1,20 @@
 # to_precision
 Formatting floating point numbers to standard, scientific, or engineering notation with a specified number of significant digits.
 
-Created by **William Rusnack**
-github.com/BebeSparkelSparkel
-linkedin.com/in/williamrusnack/
-williamrusnack@gmail.com
-and **Randle Taylor**
-github.com/randlet
+Created by:  
+**William Rusnack**
+[GitHub](github.com/BebeSparkelSparkel)
+[LinkedIn](linkedin.com/in/williamrusnack/)
+[Email](williamrusnack@gmail.com)  
+**Eric Moyer**
+[GitHub](github.com/epmoyer)
+[Email](eric@lemoncrab.com)  
+**Randle Taylor**
+[GitHub](github.com/randlet)
 
 ## Install
 
     pip install git+https://github.com/BebeSparkelSparkel/to-precision.git
-
-### to_precision
-to_precision.**to_precision**(value, precision, notation='auto', delimiter='e', auto_limit=3, strip_zeros=False, preserve=False)  
-
-Converts a value to the specified notation and precision
-value - any type that can be converted to a float
-precision - integer that is greater than zero
-notation - string
-
-* value
-    * The number to convert
-* precision
-    * The digits of precision
-* notation
-    * 'auto' - selects standard notation when abs(power) < auto_limit else returns scientific notation.
-    * 'sci' or 'scientific' - returns scientific notation. https://www.mathsisfun.com/numbers/scientific-notation.html
-    * 'eng' or 'engineering' - returns engineering notation. http://www.mathsisfun.com/definitions/engineering-notation.html
-    * 'std' or 'standard' - returns standard notation. http://www.mathsisfun.com/definitions/standard-notation.html
-* delimiter
-    * Text that is placed between the decimal value and 10s exponent
-* auto_limit
-    * Integer. When abs(power) exceeds this limit, 'auto'
-    mode will return scientific notation. The default (3) will cause 'auto' mode to return scientific notation for 0.001 < abs(value) < 1000
-* strip_zeros
-    * If true, trailing decimal zeros will be removed.
-* preserve_integer
-    * If true, 'std' will preserve all digits when returning
-    values that have no decimal component.
 
 ### standard notation
 to_precision.**std_notation**(value, precision)
@@ -109,6 +85,34 @@ ex:
     '123.4'
     >>> std_notation(1234, 4)
     '1.234e3'
+
+### to_precision
+to_precision.**to_precision**(value, precision, notation='auto', delimiter='e', auto_limit=3, strip_zeros=False, preserve=False)  
+
+Converts a value to the specified notation and precision
+value - any type that can be converted to a float
+precision - integer that is greater than zero
+notation - string
+
+* value
+    * The number to convert
+* precision
+    * The digits of precision
+* notation
+    * 'auto' - selects standard notation when abs(power) < auto_limit else returns scientific notation.
+    * 'sci' or 'scientific' - returns scientific notation. https://www.mathsisfun.com/numbers/scientific-notation.html
+    * 'eng' or 'engineering' - returns engineering notation. http://www.mathsisfun.com/definitions/engineering-notation.html
+    * 'std' or 'standard' - returns standard notation. http://www.mathsisfun.com/definitions/standard-notation.html
+* delimiter
+    * Text that is placed between the decimal value and 10s exponent
+* auto_limit
+    * Integer. When abs(power) exceeds this limit, 'auto'
+    mode will return scientific notation. The default (3) will cause 'auto' mode to return scientific notation for 0.001 < abs(value) < 1000
+* strip_zeros
+    * If true, trailing decimal zeros will be removed.
+* preserve_integer
+    * If true, 'std' will preserve all digits when returning
+    values that have no decimal component.
 
 ## Implicit vs. Explicit precision
 

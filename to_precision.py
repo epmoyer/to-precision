@@ -1,74 +1,7 @@
-__author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
+__author__ = '''William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com
+Eric Moyer github.com/epmoyer eric@lemoncrab.com'''
 
-import math
-
-def to_precision(
-  value, 
-  precision,
-  notation='auto',
-  delimiter='e',
-  auto_limit=3,
-  strip_zeros=False,
-  preserve_integer=False):
-  '''
-  converts a value to the specified notation and precision
-  value - any type that can be converted to a float
-  precision - integer that is greater than zero
-  notation - string
-    'auto' - selects standard notation when abs(power) < auto_limit else 
-      returns scientific notation.
-    'sci' or 'scientific' - returns scientific notation
-      ref: https://www.mathsisfun.com/numbers/scientific-notation.html
-    'eng' or 'engineering' - returns engineering notation
-      ref: http://www.mathsisfun.com/definitions/engineering-notation.html
-    'std' or 'standard' - returns standard notation
-      ref: http://www.mathsisfun.com/definitions/standard-notation.html
-  delimiter - is placed between the decimal value and 10s exponent
-  auto_limit - integer. When abs(power) exceeds this limit, 'auto'
-    mode will return scientific notation.
-  strip_zeros - if true, trailing decimal zeros will be removed.
-  preserve_integer - if true, 'std' will preserve all digits when returning
-    values that have no decimal component.
-  '''
-  is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
-  sign = ('-' if is_neg else '')
-
-  if notation == 'auto':
-    if abs(ten_power) < auto_limit:
-      converter = _std_notation
-    else:
-      converter = _sci_notation
-
-  elif notation in ('sci', 'scientific'):
-    converter = _sci_notation
-
-  elif notation in ('eng', 'engineering'):
-    converter = _eng_notation
-
-  elif notation in ('std', 'standard'):
-    converter = _std_notation
-
-  else:
-    raise ValueError('Unknown notation: ' + str(notation))
-
-  return converter(value, precision, delimiter, strip_zeros, preserve_integer)
-
-
-def auto_notation(value, precision, delimiter='e'):
-  '''
-  Automatically selects between standard notation (US version) and scientific notation.
-  Values in the range 0.001 < abs(value) < 1000 return standard notation.
-
-  http://www.mathsisfun.com/definitions/standard-notation.html
-  https://www.mathsisfun.com/numbers/scientific-notation.html
-
-  returns a string of value with the proper precision
-
-  ex:
-    auto_notation(123, 4) => '123.4'
-    std_notation(1234, 4) => '1.234e3'
-  '''
-  return to_precision(value, precision, notation='auto', delimiter=delimiter)
+from math import floor, log10
 
 
 def std_notation(value, precision):
@@ -134,13 +67,81 @@ def eng_notation(value, precision, delimiter='e'):
   return to_precision(value, precision, notation='eng', delimiter=delimiter)
 
 
+def auto_notation(value, precision, delimiter='e'):
+  '''
+  Automatically selects between standard notation (US version) and scientific notation.
+  Values in the range 0.001 < abs(value) < 1000 return standard notation.
+
+  http://www.mathsisfun.com/definitions/standard-notation.html
+  https://www.mathsisfun.com/numbers/scientific-notation.html
+
+  returns a string of value with the proper precision
+
+  ex:
+    auto_notation(123, 4) => '123.4'
+    std_notation(1234, 4) => '1.234e3'
+  '''
+  return to_precision(value, precision, notation='auto', delimiter=delimiter)
+
+
+def to_precision(
+  value,
+  precision,
+  notation='auto',
+  delimiter='e',
+  auto_limit=3,
+  strip_zeros=False,
+  preserve_integer=False):
+  '''
+  converts a value to the specified notation and precision
+  value - any type that can be converted to a float
+  precision - integer that is greater than zero
+  notation - string
+    'auto' - selects standard notation when abs(power) < auto_limit else
+      returns scientific notation.
+    'sci' or 'scientific' - returns scientific notation
+      ref: https://www.mathsisfun.com/numbers/scientific-notation.html
+    'eng' or 'engineering' - returns engineering notation
+      ref: http://www.mathsisfun.com/definitions/engineering-notation.html
+    'std' or 'standard' - returns standard notation
+      ref: http://www.mathsisfun.com/definitions/standard-notation.html
+  delimiter - is placed between the decimal value and 10s exponent
+  auto_limit - integer. When abs(power) exceeds this limit, 'auto'
+    mode will return scientific notation.
+  strip_zeros - if true, trailing decimal zeros will be removed.
+  preserve_integer - if true, 'std' will preserve all digits when returning
+    values that have no decimal component.
+  '''
+  is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
+
+  if notation == 'auto':
+    if abs(ten_power) < auto_limit:
+      converter = _std_notation
+    else:
+      converter = _sci_notation
+
+  elif notation in ('sci', 'scientific'):
+    converter = _sci_notation
+
+  elif notation in ('eng', 'engineering'):
+    converter = _eng_notation
+
+  elif notation in ('std', 'standard'):
+    converter = _std_notation
+
+  else:
+    raise ValueError('Unknown notation: ' + str(notation))
+
+  return converter(value, precision, delimiter, strip_zeros, preserve_integer)
+
+
 def _std_notation(value, precision, _, strip_zeros, preserve_integer):
   '''
   standard notation (US version)
   ref: http://www.mathsisfun.com/definitions/standard-notation.html
 
   returns a string of value with the proper precision
-  
+
   strip_zeros - if true, trailing decimal zeros will be removed.
   preserve_integer - if true, 'std' will preserve all digits when returning
     values that have no decimal component.
@@ -182,7 +183,7 @@ def _eng_notation(value, precision, delimiter, strip_zeros, _):
   '''
   is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
 
-  eng_power = int(3 * math.floor(ten_power / 3))
+  eng_power = int(3 * floor(ten_power / 3))
   eng_dot = dot_power + ten_power - eng_power
 
   return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot, strip_zeros) + delimiter + str(eng_power)
@@ -276,7 +277,7 @@ def _number_profile(value, precision):
     else:
       is_neg = False
 
-    power = -1 * math.floor(math.log10(value)) + precision - 1
+    power = -1 * floor(log10(value)) + precision - 1
     sig_digits = str(int(round(abs(value) * 10.0**power)))
 
   return sig_digits, int(-power), is_neg
