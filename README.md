@@ -122,23 +122,46 @@ Using `to_precision(x, 3, auto_limit=4, strip_zeros=True, preserve_integer=True)
     1.2   1.4    1       2e-11    
     1234  1.23   0.0235  0 
 
+## Decimal notation
+
+to-precision uses decimal notation to indicate precision in cases where the result:
+
+* Is an integer
+* Ends with one or more zeros
+* All ending zeros are significant
+
+See: https://en.wikipedia.org/wiki/Significant_figures#Significant_figures_rules_explained
+
+For examlple:
+
+    >>> to_precision(120, 2)
+    '120'                      # Zero is not significant
+    >>> to_precision(120, 3)
+    '120.'                     # Zero is significant
+    >>> to_precision(100, 2)
+    '100'                      # First zero is significant but second is not
+    >>>
+
 
 ## Demonstration
 
-The script `demonstration.py` exercises the various options...
+The script `demonstration.py` demonstrates the behavior of the various options...
 
     $./demonstration.py 
+    Default (Auto Notation):
+        to_precision(value, precision)
 
-    value         precision=1   precision=2    precision=3     precision=4      precision=5       Additional Options              
-    ------------  ------------  -------------  --------------  ---------------  ----------------  ------------------------------  
-    0             0             0.0            0.00            0.000            0.0000                                            
-    10            10            10             10.0            10.00            10.000                                            
-    100           100           100            100             100.0            100.00                                            
-    ...
-    (many cases)
-    ...
-    -0.000456789  -0.0005       -0.00046       -0.000457       -0.0004568       -0.00045679       auto_limit=5                    
-    -0.003456789  -0.003        -0.0035        -0.00346        -0.003457        -0.0034568        auto_limit=5                    
-    -0.023456789  -0.02         -0.023         -0.0235         -0.02346         -0.023457         auto_limit=5                    
-    -0.123456789  -0.1          -0.12          -0.123          -0.1235          -0.12346          auto_limit=5                    
+        value         precision=1    precision=2    precision=3    precision=4    precision=5
+        ------------  -------------  -------------  -------------  -------------  -------------
+        0             0              0.0            0.00           0.000          0.0000
+        1             1              1.0            1.00           1.000          1.0000
+        10            10             10.            10.0           10.00          10.000                                           
+        ...
+        (many cases)
+        ...
+        -0.000123456  -0.0001        -0.00012       -0.000123      -0.0001235     -0.00012346
+        -0.001234567  -0.001         -0.0012        -0.00123       -0.001235      -0.0012346
+        -0.012345678  -0.01          -0.012         -0.0123        -0.01235       -0.012346
+        -0.123456789  -0.1           -0.12          -0.123         -0.1235        -0.12346
+                  
                                                                                                                                   
