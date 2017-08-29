@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
 
 import unittest
@@ -195,23 +198,28 @@ class TestSciNotation(unittest.TestCase):
 
 class TestPlaceDot(unittest.TestCase):
   def test_all(self):
-    self.assertEqual(_place_dot('123', 0, False), '123')
-    self.assertEqual(_place_dot('120', 0, False), '120.')
-    self.assertEqual(_place_dot('0', 0, False), '0')
+    self.assertEqual(_place_dot('123',   0, False, 'dot'), '123'  )
+    self.assertEqual(_place_dot('120',   0, False, 'dot'), '120.' )
+    self.assertEqual(_place_dot('0',     0, False, 'dot'),   '0'  )
 
-    self.assertEqual(_place_dot('123', 2, False), '12300')
+    self.assertEqual(_place_dot('123',   2, False, 'dot'), '12300')
 
-    self.assertEqual(_place_dot('123', -2, False), '1.23')
-    self.assertEqual(_place_dot('123', -3, False), '0.123')
-    self.assertEqual(_place_dot('123', -5, False), '0.00123')
+    self.assertEqual(_place_dot('123',  -2, False, 'dot'), '1.23'   )
+    self.assertEqual(_place_dot('123',  -3, False, 'dot'), '0.123'  )
+    self.assertEqual(_place_dot('123',  -5, False, 'dot'), '0.00123')
 
     # Zero stripping
-    self.assertEqual(_place_dot('123' ,  2, True),  '12300')
-    self.assertEqual(_place_dot('100' , -1, True),  '10')
-    self.assertEqual(_place_dot('1200', -2, False), '12.00')
-    self.assertEqual(_place_dot('1200', -2, True),  '12')
-    self.assertEqual(_place_dot('1200', -1, False), '120.0')
-    self.assertEqual(_place_dot('1200', -1, True),  '120')
+    self.assertEqual(_place_dot('123' ,  2, True,  'dot'), '12300')
+    self.assertEqual(_place_dot('100' , -1, True,  'dot'),    '10'   )
+    self.assertEqual(_place_dot('1200', -2, False, 'dot'),    '12.00')
+    self.assertEqual(_place_dot('1200', -2, True,  'dot'),    '12'   )
+    self.assertEqual(_place_dot('1200', -1, False, 'dot'),   '120.0' )
+    self.assertEqual(_place_dot('1200', -1, True,  'dot'),   '120'   )
+
+    # Convention: None
+    self.assertEqual(_place_dot('120',   0, False, 'none'), '120' )
+    # Convention: Overbar
+    self.assertEqual(_place_dot('120',   0, False, 'overbar'), u'120\u0305' )
 
 class TestNumberProfile(unittest.TestCase):
   def test_positive(self):

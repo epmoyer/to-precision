@@ -20,14 +20,26 @@ def main():
                    [x / 10**9  for x in seed])
 
     option_cases = (
-        ('Default (Auto Notation)',                     dict()),
-        ('Standard Notation',                           dict(notation='std')),
-        ('Engineering Notation',                        dict(notation='eng')),
-        ('Scientific Notation',                         dict(notation='sci')),
-        ('Standard Notation with zero stripping',       dict(notation='std', strip_zeros=True)),
-        ('Scientific Notation with zero stripping',     dict(notation='sci', strip_zeros=True)),
-        ('Standard Notation with integer preservation', dict(notation='std', preserve_integer=True)),
-        ('Auto Notation with exponent limit of 5',      dict(auto_limit=5)),
+        # Convention: Dot
+        ('Default (Auto Notation), Convention: Dot',                         dict()),
+        ('Standard Notation, Convention: Dot',                               dict(notation='std')),
+        ('Engineering Notation, Convention: Dot',                            dict(notation='eng')),
+        ('Scientific Notation, Convention: Dot',                             dict(notation='sci')),
+        ('Standard Notation with zero stripping, Convention: Dot',           dict(notation='std', strip_zeros=True)),
+        ('Scientific Notation with zero stripping, Convention: Dot',         dict(notation='sci', strip_zeros=True)),
+        ('Standard Notation with integer preservation, Convention: Dot',     dict(notation='std', preserve_integer=True)),
+        ('Auto Notation with exponent limit of 5, Convention: Dot',          dict(auto_limit=5)),
+
+        # Convention: None
+        ('Standard Notation, Convention: None',                              dict(notation='std', convention='none')),
+
+        # Convention: Overbar
+        ('Standard Notation, Convention: Overbar',                           dict(notation='std', convention='overbar')),
+        ('Engineering Notation, Convention: Overbar',                        dict(notation='eng', convention='overbar')),
+        ('Scientific Notation, Convention: Overbar',                         dict(notation='sci', convention='overbar')),
+        ('Standard Notation with zero stripping, Convention: Overbar',       dict(notation='std', strip_zeros=True, convention='overbar')),
+        ('Scientific Notation with zero stripping, Convention: Overbar',     dict(notation='sci', strip_zeros=True, convention='overbar')),
+        ('Standard Notation with integer preservation, Convention: Overbar', dict(notation='std', preserve_integer=True, convention='overbar')),
     )
 
     precisions = tuple(range(1, 6))
@@ -41,11 +53,11 @@ def main():
         Default (Auto Notation):
             to_precision(value, precision)
         '''
-        print(options_description + ':')
+        print(options_description)
         options_string = ', '.join(
             ['value', 'precision'] +
             [note + '=' + repr(inputs) for note, inputs in options_dict.items()])
-        print('to_precision({inputs})'.format(inputs=options_string), end='\n' * 2)
+        print('to_precision({inputs})'.format(inputs=options_string) + '\n' * 2)
 
         table = []
         for val in test_values:
@@ -57,7 +69,7 @@ def main():
 
         headers = ['value'] + ['precision={}'.format(x) for x in precisions]
 
-        print(tabulate(table, headers, disable_numparse=True), end='\n' * 3)
+        print(tabulate(table, headers, disable_numparse=True) + '\n' * 3)
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,7 @@
 __author__ = '''William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com
 Eric Moyer github.com/epmoyer eric@lemoncrab.com'''
 
+import sys
 from math import floor, log10
 
 
@@ -91,7 +92,8 @@ def to_precision(
   delimiter='e',
   auto_limit=3,
   strip_zeros=False,
-  preserve_integer=False):
+  preserve_integer=False,
+  convention='dot'):
   '''
   converts a value to the specified notation and precision
   value - any type that can be converted to a float
@@ -111,6 +113,11 @@ def to_precision(
   strip_zeros - if true, trailing decimal zeros will be removed.
   preserve_integer - if true, 'std' will preserve all digits when returning
     values that have no decimal component.
+  convention - string
+    'dot' - selects dot convention
+      ref: https://en.wikipedia.org/wiki/Significant_figures#Significant_figures_rules_explained
+    'overbar' - selects overbar convention
+      ref: https://en.wikipedia.org/wiki/Significant_figures#Significant_figures_rules_explained
   '''
   is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
 
@@ -132,10 +139,11 @@ def to_precision(
   else:
     raise ValueError('Unknown notation: ' + str(notation))
 
-  return converter(value, precision, delimiter, strip_zeros, preserve_integer)
+  return converter(value, precision, delimiter, strip_zeros,
+                   preserve_integer, convention)
 
 
-def _std_notation(value, precision, _, strip_zeros, preserve_integer):
+def _std_notation(value, precision, _, strip_zeros, preserve_integer, convention):
   '''
   standard notation (US version)
   ref: http://www.mathsisfun.com/definitions/standard-notation.html
@@ -147,7 +155,7 @@ def _std_notation(value, precision, _, strip_zeros, preserve_integer):
     values that have no decimal component.
   '''
   sig_digits, power, is_neg = _number_profile(value, precision)
-  result = ('-' if is_neg else '') + _place_dot(sig_digits, power, strip_zeros)
+  result = ('-' if is_neg else '') + _place_dot(sig_digits, power, strip_zeros, convention)
 
   if preserve_integer and not '.' in result:
     # Result was an integer, preserve all digits
@@ -156,7 +164,7 @@ def _std_notation(value, precision, _, strip_zeros, preserve_integer):
   return result
 
 
-def _sci_notation(value, precision, delimiter, strip_zeros, _):
+def _sci_notation(value, precision, delimiter, strip_zeros, _, convention):
   '''
   scientific notation
   ref: https://www.mathsisfun.com/numbers/scientific-notation.html
@@ -168,10 +176,12 @@ def _sci_notation(value, precision, delimiter, strip_zeros, _):
   '''
   is_neg, sig_digits, dot_power, ten_power = _sci_decompose(value, precision)
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, dot_power, strip_zeros) + delimiter + str(ten_power)
+  return (('-' if is_neg else '') +
+          _place_dot(sig_digits, dot_power, strip_zeros, convention) +
+          delimiter +
+          str(ten_power))
 
-
-def _eng_notation(value, precision, delimiter, strip_zeros, _):
+def _eng_notation(value, precision, delimiter, strip_zeros, _, convention):
   '''
   engineering notation
   ref: http://www.mathsisfun.com/definitions/engineering-notation.html
@@ -186,7 +196,10 @@ def _eng_notation(value, precision, delimiter, strip_zeros, _):
   eng_power = int(3 * floor(ten_power / 3))
   eng_dot = dot_power + ten_power - eng_power
 
-  return ('-' if is_neg else '') + _place_dot(sig_digits, eng_dot, strip_zeros) + delimiter + str(eng_power)
+  return (('-' if is_neg else '') + 
+          _place_dot(sig_digits, eng_dot, strip_zeros, convention) +
+          delimiter +
+          str(eng_power))
 
 
 def _sci_decompose(value, precision):
@@ -208,7 +221,7 @@ def _sci_decompose(value, precision):
   return is_neg, sig_digits, dot_power, ten_power
 
 
-def _place_dot(digits, power, strip_zeros=False):
+def _place_dot(digits, power, strip_zeros, convention):
   '''
   places the dot in the correct spot in the digits
   if the dot is outside the range of the digits zeros will be added
@@ -230,8 +243,18 @@ def _place_dot(digits, power, strip_zeros=False):
       linkedin.com/in/williamrusnack/
       williamrusnack@gmail.com
   '''
+  #print(f'_place_dot(digits={digits}, power={power}, strip_zeros={strip_zeros}')
+
+  if convention not in ('overbar', 'dot', 'none'):
+    raise ValueError('Unknown convention: ' + str(convention))
+
   if power > 0:
-    out = digits + '0' * power
+    if convention == 'overbar':
+      # Add overbar to last digit before added (non-significant) zeros
+      out = digits + u'\u0305' + '0' * power
+    else:
+      # Convention is dot or none
+      out = digits + '0' * power
 
   elif power < 0:
     power = abs(power)
@@ -244,10 +267,22 @@ def _place_dot(digits, power, strip_zeros=False):
       out = '0.' + '0' * (power - precision) + digits
 
   else:
-    out = digits + ('.' if digits[-1] == '0' and len(digits) > 1 else '')
+    if convention == 'overbar':
+      # Add overbar to last digit if representation is non-zero and ends in zero
+      out = digits + (u'\u0305' if digits[-1] == '0' and len(digits) > 1 else '')
+    elif convention == 'dot':
+      # Add trailing decimal if representation is non-zero and ends in zero
+      out = digits + ('.' if digits[-1] == '0' and len(digits) > 1 else '')
+    else:
+      out = digits
 
   if strip_zeros and '.' in out:
     out = out.rstrip('0').rstrip('.')
+
+  if convention == 'overbar' and sys.version_info.major == 2:
+    # Always return unicode on Python 2 in overbar mode (rather than
+    # only when an overbar appears)
+    out = unicode(out)
 
   return out
 
