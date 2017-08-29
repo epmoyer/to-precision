@@ -1,5 +1,10 @@
 # to_precision
+
+[![Travis branch](https://img.shields.io/travis/epmoyer/to-precision/overbar.svg)]()
+
 Formatting floating point numbers to standard, scientific, or engineering notation with a specified number of significant digits.
+
+Python: 2.7, 3.3, 3.4, 3.5, 3.6
 
 Created by:  
 **William Rusnack**
@@ -11,6 +16,7 @@ Created by:
 [Email](eric@lemoncrab.com)  
 **Randle Taylor**
 [GitHub](github.com/randlet)
+
 
 ## Install
 
@@ -164,6 +170,66 @@ The following examples illustrate the behavior of the 3 convention options in th
                                                                      #   convention.
     to_precision(120000, 3, 'eng', convention='overbar') => '12̅0e3'  # Can be indicated by overbar notation
     to_precision(120000, 3, 'eng', convention='none')    => '120e3'
+
+
+## Test overbar character outside of code block in markdown
+
+----------------
+
+to_precision(120, 3, 'std', convention='dot')     => '120.'  # Dot indicates last zero is significant
+
+to_precision(120, 3, 'std', convention='overbar') => '120̅'   # Bar indicates last zero is significant
+
+to_precision(120, 3, 'std', convention='none')    => '120'  
+
+to_precision(120, 2, 'std', convention='dot')     => '120'   # '2' is last significant digit, 
+
+                                                             #   but can not be indicated by dot 
+
+                                                             #   convention.
+
+to_precision(120, 2, 'std', convention='overbar') => '12̅0'   # Can be shown by overbar notation
+
+to_precision(120, 2, 'std', convention='none')    => '120'
+
+to_precision(1200, 3, 'std', convention='dot')     => '1200' # First zero is significant, but
+
+                                                             # can not be indicated by dot
+
+                                                             # notation
+
+to_precision(1200, 3, 'std', convention='overbar') => '120̅0' # Can be indicated by overbar notation
+
+to_precision(1200, 3, 'std', convention='none')    => '1200'
+
+All digits are significant, so all 3 conventions return the same result:
+
+to_precision(123, 3, 'std', convention='dot')     => '123'   
+
+to_precision(123, 3, 'std', convention='overbar') => '123'
+
+to_precision(123, 3, 'std', convention='none')    => '123'
+
+
+Ambiguities can also arise in engineering notation.
+
+to_precision(120000, 3, 'eng', convention='dot')     => '120.e3' # Dot indicates last zero is significant
+
+to_precision(120000, 3, 'eng', convention='overbar') => '120̅e3'  # Overbar indicates last zero is significant
+
+to_precision(120000, 3, 'eng', convention='none')    => '120e3'
+
+to_precision(120000, 3, 'eng', convention='dot')     => '120e3'  # '2' is last significant digit, 
+
+                                                                 #   but can not be indicated by dot 
+
+                                                                 #   convention.
+
+to_precision(120000, 3, 'eng', convention='overbar') => '12̅0e3'  # Can be indicated by overbar notation
+
+to_precision(120000, 3, 'eng', convention='none')    => '120e3'
+
+-----------------
 
 See https://en.wikipedia.org/wiki/Significant_figures#Significant_figures_rules_explained
 
