@@ -137,105 +137,16 @@ Potentially ambiguous notations arise in two cases
 * Standard notation, where the result is an integer that ends in one or more zeros.
 * Engineering notation, where the value before the exponent in the result is an integer that ends in one or more zeros.
 
+
 The following examples illustrate the behavior of the 3 convention options in these situations.
 
-    to_precision(120, 3, 'std', convention='dot')     => '120.'  # Dot indicates last zero is significant
-    to_precision(120, 3, 'std', convention='overbar') => '120̅'   # Bar indicates last zero is significant
-    to_precision(120, 3, 'std', convention='none')    => '120'  
-
-    to_precision(120, 2, 'std', convention='dot')     => '120'   # '2' is last significant digit, 
-                                                                 #   but can not be indicated by dot 
-                                                                 #   convention.
-    to_precision(120, 2, 'std', convention='overbar') => '12̅0'   # Can be shown by overbar notation
-    to_precision(120, 2, 'std', convention='none')    => '120'
-
-    to_precision(1200, 3, 'std', convention='dot')     => '1200' # First zero is significant, but
-                                                                 # can not be indicated by dot
-                                                                 # notation
-    to_precision(1200, 3, 'std', convention='overbar') => '120̅0' # Can be indicated by overbar notation
-    to_precision(1200, 3, 'std', convention='none')    => '1200'
-
-    # All digits are significant, so all 3 conventions return the same result:
-    to_precision(123, 3, 'std', convention='dot')     => '123'   
-    to_precision(123, 3, 'std', convention='overbar') => '123'
-    to_precision(123, 3, 'std', convention='none')    => '123'
-
-    # Ambiguities can also arise in engineering notation.
-    to_precision(120000, 3, 'eng', convention='dot')     => '120.e3' # Dot indicates last zero is significant
-    to_precision(120000, 3, 'eng', convention='overbar') => '120̅e3'  # Overbar indicates last zero is significant
-    to_precision(120000, 3, 'eng', convention='none')    => '120e3'
-
-    to_precision(120000, 3, 'eng', convention='dot')     => '120e3'  # '2' is last significant digit, 
-                                                                     #   but can not be indicated by dot 
-                                                                     #   convention.
-    to_precision(120000, 3, 'eng', convention='overbar') => '12̅0e3'  # Can be indicated by overbar notation
-    to_precision(120000, 3, 'eng', convention='none')    => '120e3'
-
-
-## Test overbar character outside of code block in markdown
-
-----------------
-
-to_precision(120, 3, 'std', convention='dot')     => '120.'  # Dot indicates last zero is significant
-
-to_precision(120, 3, 'std', convention='overbar') => '120̅'   # Bar indicates last zero is significant
-
-to_precision(120, 3, 'std', convention='none')    => '120'  
-
-to_precision(120, 2, 'std', convention='dot')     => '120'   # '2' is last significant digit, 
-
-                                                             #   but can not be indicated by dot 
-
-                                                             #   convention.
-
-to_precision(120, 2, 'std', convention='overbar') => '12̅0'   # Can be shown by overbar notation
-
-to_precision(120, 2, 'std', convention='none')    => '120'
-
-to_precision(1200, 3, 'std', convention='dot')     => '1200' # First zero is significant, but
-
-                                                             # can not be indicated by dot
-
-                                                             # notation
-
-to_precision(1200, 3, 'std', convention='overbar') => '120̅0' # Can be indicated by overbar notation
-
-to_precision(1200, 3, 'std', convention='none')    => '1200'
-
-All digits are significant, so all 3 conventions return the same result:
-
-to_precision(123, 3, 'std', convention='dot')     => '123'   
-
-to_precision(123, 3, 'std', convention='overbar') => '123'
-
-to_precision(123, 3, 'std', convention='none')    => '123'
-
-
-Ambiguities can also arise in engineering notation.
-
-to_precision(120000, 3, 'eng', convention='dot')     => '120.e3' # Dot indicates last zero is significant
-
-to_precision(120000, 3, 'eng', convention='overbar') => '120̅e3'  # Overbar indicates last zero is significant
-
-to_precision(120000, 3, 'eng', convention='none')    => '120e3'
-
-to_precision(120000, 3, 'eng', convention='dot')     => '120e3'  # '2' is last significant digit, 
-
-                                                                 #   but can not be indicated by dot 
-
-                                                                 #   convention.
-
-to_precision(120000, 3, 'eng', convention='overbar') => '12̅0e3'  # Can be indicated by overbar notation
-
-to_precision(120000, 3, 'eng', convention='none')    => '120e3'
-
------------------
-
+![overbar](https://github.com/epmoyer/to-precision/raw/overbar/img/overbar_example.png)
+    
 See https://en.wikipedia.org/wiki/Significant_figures#Significant_figures_rules_explained
 
 **NOTE:**
 
-**The overbar character is rendered using a Unicode COMBINING OVERLINE (U+0305). in Python 2, calling to_precision() with convention='overbar' will ALWAYS return a unicode() object, WHETHER OR NOT the result contains an overbar (to avoid the surprise of only occasionally returning Unicode).**
+The overbar character is rendered using a Unicode COMBINING OVERLINE (U+0305). in Python 2, calling to_precision() with convention='overbar' will **ALWAYS** return a unicode() object, **WHETHER OR NOT** the result contains an overbar (to avoid the surprise of only _occasionally_ returning Unicode).
 
 ## Implicit vs. Explicit precision
 
