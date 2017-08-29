@@ -8,4 +8,4 @@ install:
   - pip install -r dev_requirements.txt
 cache: pip
 script:
-  - tests.py
+  - python tests.py
