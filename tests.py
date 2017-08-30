@@ -4,7 +4,10 @@
 __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
 
 import unittest
+from io import StringIO
+from contextlib import redirect_stdout
 from to_precision import to_precision, auto_notation, std_notation, sci_notation, eng_notation, _place_dot, _number_profile
+import demonstration
 
 class TestToPrecision(unittest.TestCase):
   def test_auto(self):
@@ -281,6 +284,15 @@ class TestNumberProfile(unittest.TestCase):
         ('13', -2, True)
       )
 
+class TestDemonstration(unittest.TestCase):
+  def test_main(self):
+    '''
+    Verify that the demonstration.py module runs without errors.
+    Does not verify that the output is well formed or correct.
+    ''' 
+    output = StringIO()
+    with redirect_stdout(output):
+      demonstration.main()
 
 if __name__ == '__main__':
   unittest.main()
