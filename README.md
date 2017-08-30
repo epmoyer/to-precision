@@ -1,6 +1,6 @@
 # to_precision
 
-[![Travis branch](https://img.shields.io/travis/epmoyer/to-precision/overbar.svg)]()
+[![Travis branch](https://img.shields.io/travis/epmoyer/to-precision/overbar.svg)](https://travis-ci.org/epmoyer/to-precision)
 
 Formatting floating point numbers to standard, scientific, or engineering notation with a specified number of significant digits.
 

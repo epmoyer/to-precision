@@ -3,9 +3,10 @@
 
 __author__ = 'William Rusnack github.com/BebeSparkelSparkel linkedin.com/in/williamrusnack williamrusnack@gmail.com'
 
+import sys
 import unittest
 from io import StringIO
-from contextlib import redirect_stdout
+from contextlib import contextmanager
 from to_precision import to_precision, auto_notation, std_notation, sci_notation, eng_notation, _place_dot, _number_profile
 import demonstration
 
@@ -284,15 +285,41 @@ class TestNumberProfile(unittest.TestCase):
         ('13', -2, True)
       )
 
+
 class TestDemonstration(unittest.TestCase):
   def test_main(self):
     '''
-    Verify that the demonstration.py module runs without errors.
+    Verify that the demonstration.py module won't raise exceptions.
     Does not verify that the output is well formed or correct.
     ''' 
-    output = StringIO()
-    with redirect_stdout(output):
+    with silence_stdout():
       demonstration.main()
+
+
+@contextmanager
+def silence_stdout():
+  ''' Silence stdout by redirecting it to a temporary string
+
+  Compatible with Python 2.7 & Python 3
+  '''
+  if sys.version_info.major == 2:
+    # Python 2: Support printing of both unicode and str
+    #   objects by redirecting stdout to a codec wrapper
+    #   around a cStringIO object to handle the translation.
+    import cStringIO
+    import codecs
+    string_buffer = cStringIO.StringIO()
+    redirect_object = codecs.getwriter("utf8")(string_buffer)
+  else:
+    # Python 3: Redirect stdout to a StringIO object
+    redirect_object = StringIO()
+
+  oldstdout = sys.stdout
+  sys.stdout = redirect_object
+  try:
+    yield
+  finally:
+    sys.stdout = oldstdout
 
 if __name__ == '__main__':
   unittest.main()
